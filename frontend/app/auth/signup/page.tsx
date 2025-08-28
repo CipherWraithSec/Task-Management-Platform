@@ -25,10 +25,13 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSignUpMutation } from "@/app/hooks/useAuth";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export type SignupFormData = z.infer<typeof signUpSchema>;
 
 export default function Signup() {
+  const router = useRouter();
+
   const form = useForm<SignupFormData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -50,7 +53,7 @@ export default function Signup() {
         });
 
         form.reset();
-        // navigate("/sign-in");
+        router.push("/auth/login");
       },
       onError: (error: any) => {
         const errorMessage =
@@ -142,7 +145,7 @@ export default function Signup() {
         <CardFooter className="flex items-center justify-center mt-6">
           <div className="flex items-center justify-center">
             <p className="text-sm text-muted-foreground">
-              Already have an account? <Link href="/auth/login">Sign in</Link>
+              Already have an account? <Link href="/auth/login">Login</Link>
             </p>
           </div>
         </CardFooter>
