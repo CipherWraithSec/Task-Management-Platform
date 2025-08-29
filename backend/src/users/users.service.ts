@@ -1,5 +1,5 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { CreateUserRequest } from './dto/create-user.request';
+import { CreateUserDTO } from './dto/createUser.request';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from 'generated/prisma';
@@ -9,7 +9,7 @@ export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
   // Persist user in database
-  async createUser(data: CreateUserRequest): Promise<Partial<User>> {
+  async createUser(data: CreateUserDTO): Promise<Partial<User>> {
     try {
       return await this.prismaService.user.create({
         data: {
@@ -19,6 +19,7 @@ export class UsersService {
         select: {
           id: true,
           email: true,
+          username: true,
         },
       });
     } catch (err) {

@@ -37,7 +37,7 @@ export default function Signup() {
     defaultValues: {
       email: "",
       password: "",
-      name: "",
+      username: "",
       confirmPassword: "",
     },
   });
@@ -96,10 +96,10 @@ export default function Signup() {
             />
             <FormField
               control={form.control}
-              name="name"
+              name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Full Name</FormLabel>
+                  <FormLabel>Username</FormLabel>
                   <FormControl>
                     <Input type="text" placeholder="John Doe" {...field} />
                   </FormControl>
