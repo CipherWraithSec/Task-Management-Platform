@@ -56,10 +56,9 @@ export default function Signup() {
         router.push("/auth/login");
       },
       onError: (error: any) => {
-        const errorMessage =
-          error.response?.data?.message || "An error occurred";
+        // const errorMessage = error.response?.data?.message || "An error occurred";
         console.log(error);
-        toast.error(errorMessage);
+        // toast.error(errorMessage);
       },
     });
   };

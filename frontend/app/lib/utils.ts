@@ -1,6 +1,24 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
+// Combine class names using clsx and twMerge
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
+
+// Get a user-friendly error message from the api response
+export const getErrorMessage = (response: any) => {
+  if (response.message) {
+    // Check if the message is an array from class-validator middleware
+    if (Array.isArray(response.message)) {
+      return formatErrorMessage(response.message[0]);
+    }
+    return formatErrorMessage(response.message);
+  }
+  return "Unknown error occured.";
+};
+
+// Capitalize the first letter of the error message
+const formatErrorMessage = (message: string) => {
+  return message.charAt(0).toUpperCase() + message.slice(1);
+};
