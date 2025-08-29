@@ -13,13 +13,14 @@ export class UsersService {
     try {
       return await this.prismaService.user.create({
         data: {
-          ...data,
+          username: data.username,
+          email: data.email,
           password: await bcrypt.hash(data.password, 10),
         },
         select: {
           id: true,
-          email: true,
           username: true,
+          email: true,
         },
       });
     } catch (err) {

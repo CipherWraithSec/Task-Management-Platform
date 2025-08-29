@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { signInSchema } from "@/lib/schema";
 import {
   Card,
   CardContent,
@@ -27,15 +26,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLoginMutation } from "@/app/hooks/useAuth";
 import { toast } from "sonner";
 import { z } from "zod";
+import { loginSchema } from "@/app/lib/schema";
 
-type SigninFormData = z.infer<typeof signInSchema>;
+type SigninFormData = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const router = useRouter();
   //   const { login } = useAuth();
 
   const form = useForm<SigninFormData>({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -98,12 +98,6 @@ export default function Login() {
                 <FormItem>
                   <div className="flex items-center justify-between">
                     <FormLabel>Password</FormLabel>
-                    <Link
-                      href="/forgot-password"
-                      className="text-sm text-blue-600"
-                    >
-                      Forgot password?
-                    </Link>
                   </div>
                   <FormControl>
                     <Input type="password" placeholder="********" {...field} />

@@ -26,6 +26,7 @@ import Link from "next/link";
 import { useSignUpMutation } from "@/app/hooks/useAuth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { getErrorMessage } from "@/app/lib/utils";
 
 export type SignupFormData = z.infer<typeof signUpSchema>;
 
@@ -47,18 +48,16 @@ export default function Signup() {
   const handleOnSubmit = (values: SignupFormData) => {
     mutate(values, {
       onSuccess: () => {
-        toast.success("Email Verification Required", {
-          description:
-            "Please check your email for a verification link. If you don't see it, please check your spam folder.",
+        toast.success("Account created successfully", {
+          description: "You can now log in with your credentials.",
         });
 
         form.reset();
         router.push("/auth/login");
       },
       onError: (error: any) => {
-        // const errorMessage = error.response?.data?.message || "An error occurred";
-        console.log(error);
-        // toast.error(errorMessage);
+        const errorMessage = getErrorMessage(error);
+        toast.error(errorMessage);
       },
     });
   };

@@ -15,7 +15,7 @@ export const getErrorMessage = (response: any) => {
     }
     return formatErrorMessage(response.message);
   }
-  return "Unknown error occured.";
+  return "An error occurred";
 };
 
 // Capitalize the first letter of the error message

@@ -11,6 +11,12 @@ async function bootstrap() {
   // Set up global middleware
   app.useLogger(app.get(Logger));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
+    credentials: false, // Set to true when sending cookies or auth headers
+  });
 
   // Start the application
   await app.listen(app.get(ConfigService).getOrThrow('PORT'));
