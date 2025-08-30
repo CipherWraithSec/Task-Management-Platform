@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from 'nestjs-pino';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   // Create the Nest application
@@ -11,11 +12,12 @@ async function bootstrap() {
   // Set up global middleware
   app.useLogger(app.get(Logger));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.use(cookieParser());
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type,Authorization',
-    credentials: false, // Set to true when sending cookies or auth headers
+    credentials: true, // Set to true when sending cookies or auth headers
   });
 
   // Start the application
