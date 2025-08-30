@@ -11,6 +11,6 @@ export const useSignUpMutation = () => {
 export const useLoginMutation = () => {
   return useMutation({
     mutationFn: (data: { email: string; password: string }) =>
-      postData("/auth/users", data),
+      postData("/auth/login", data),
   });
 };

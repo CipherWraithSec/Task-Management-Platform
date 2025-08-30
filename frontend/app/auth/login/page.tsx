@@ -27,14 +27,15 @@ import { useLoginMutation } from "@/app/hooks/useAuth";
 import { toast } from "sonner";
 import { z } from "zod";
 import { loginSchema } from "@/app/lib/schema";
+import { getErrorMessage } from "@/app/lib/utils";
 
-type SigninFormData = z.infer<typeof loginSchema>;
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const router = useRouter();
   //   const { login } = useAuth();
 
-  const form = useForm<SigninFormData>({
+  const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
@@ -43,18 +44,16 @@ export default function Login() {
   });
   const { mutate, isPending } = useLoginMutation();
 
-  const handleOnSubmit = (values: SigninFormData) => {
+  const handleOnSubmit = (values: LoginFormData) => {
     mutate(values, {
       onSuccess: (data) => {
         // login(data);
-        // console.log(data);
+        console.log(data);
         toast.success("Login successful");
         router.push("/");
       },
       onError: (error: any) => {
-        const errorMessage =
-          error.response?.data?.message || "An error occurred";
-        console.log(error);
+        const errorMessage = getErrorMessage(error);
         toast.error(errorMessage);
       },
     });
