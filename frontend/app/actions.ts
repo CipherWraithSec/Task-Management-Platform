@@ -1,46 +1,31 @@
 "use server";
 
-import axios from "axios";
 import { SignupFormData } from "./auth/signup/page";
 import { jwtDecode } from "jwt-decode";
-import { getErrorMessage } from "./lib/utils/errorUtil";
 import { cookies } from "next/headers";
-import createApi from "./lib/utils/apiUtil";
-import { url } from "inspector";
+import createApi from "./common/utils/api";
 
-// const api = axios.create({
-//   baseURL: API_URL,
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-//   withCredentials: true, // Send cookies
-// });
+// Capitalize the first letter of the error message
+const formatErrorMessage = (message: string) => {
+  return message.charAt(0).toUpperCase() + message.slice(1);
+};
 
-export async function loginAction<T>(url: string, data: unknown): Promise<T> {
-  // Get the cookie from the current request scope
-  const cookieString = cookies().toString();
-
-  // Access the Axios instance
-  const api = createApi(cookieString);
-
-  try {
-    const response = await api.post(url, data);
-
-    // set cookie
-    setAuthCookie(response);
-    // redirect("/");
-    return response.data;
-  } catch (error: any) {
-    throw getErrorMessage(error.response?.data);
-    // throw error;
+// Get a user-friendly error message from the api response
+export const getErrorMessage = async (response: any) => {
+  if (response?.message) {
+    // Check if the message is an array from class-validator middleware
+    if (Array.isArray(response.message)) {
+      return formatErrorMessage(response.message[0]);
+    }
+    return formatErrorMessage(response.message);
   }
-}
+  return "An error occurred";
+};
 
-// Take in a response and pull of the JWT form the Set-cookie header and add it to nextjs server cookies
-const setAuthCookie = (response: any) => {
-  // Axios returns 'set-cookie' as an array of strings, or undefined if no header is present
+// Set the authentication cookie after a successful login.
+const setAuthCookie = (response, cookieStore) => {
+  // Returns 'set-cookie' as an array of strings, or undefined if no header is present
   const setCookieHeader = response.headers["set-cookie"];
-
   // Check that the header exists and is a string before attempting to split
   if (
     setCookieHeader &&
@@ -50,14 +35,12 @@ const setAuthCookie = (response: any) => {
     // The first element of the array contains the combined cookie string
     const cookieString = setCookieHeader[0];
     const token = cookieString.split(";")[0].split("=")[1];
-
     // Handle the case where the token is undefined
     if (token) {
-      const cookieStore = cookies();
       cookieStore.set({
         name: "Authentication",
         value: token,
-        secure: false, // for https
+        secure: false, // Set to true for https
         httpOnly: true,
         expires: new Date(jwtDecode(token).exp! * 1000),
       });
@@ -76,16 +59,61 @@ const setAuthCookie = (response: any) => {
   }
 };
 
+export async function loginAction<T>(url: string, data: unknown): Promise<T> {
+  // Get the cookie from the current request scope
+  const cookieStore = await cookies();
+  const cookieString = cookieStore.toString();
+
+  // Access the Axios instance
+  const api = createApi(cookieString);
+
+  try {
+    const response = await api.post(url, data);
+
+    // Call the helper and pass the cookieStore object
+    setAuthCookie(response, cookieStore);
+
+    return response.data;
+  } catch (error: any) {
+    throw await getErrorMessage(error.response?.data);
+  }
+}
+
 export async function postDataAction<T>(
   url: string,
   data: unknown
 ): Promise<T> {
+  // Get the cookie from the current request scope
+  const cookieStore = await cookies();
+  const cookieString = cookieStore.toString();
+
+  // Access the Axios instance
+  const api = createApi(cookieString);
+
   try {
     const response = await api.post(url, data);
 
     return response.data;
   } catch (error: any) {
-    throw getErrorMessage(error.response?.data);
+    throw await getErrorMessage(error.response?.data);
+  }
+}
+
+export async function fetchDataAction<T>(url: string): Promise<T> {
+  // Get the cookie from the current request scope
+  const cookieStore = await cookies();
+  const cookieString = cookieStore.toString();
+
+  // Access the Axios instance
+  const api = createApi(cookieString);
+
+  try {
+    const response = await api.get(url);
+
+    return response.data;
+  } catch (error: any) {
+    throw await getErrorMessage(error.response?.data);
+    // throw error;
   }
 }
 
@@ -106,23 +134,5 @@ export async function postDataAction<T>(
 //     throw { message: "Network or unexpected error occurred" };
 //   }
 // }
-
-export async function fetchDataAction<T>(url: string): Promise<T> {
-  // Get the cookie from the current request scope
-  //   const cookieString = cookies().toString();
-  const cookieString = cookies().toString();
-
-  // Access the Axios instance
-  const api = createApi(cookieString);
-
-  try {
-    const response = await api.get(url);
-
-    return response.data;
-  } catch (error: any) {
-    throw getErrorMessage(error.response?.data);
-    // throw error;
-  }
-}
 
 // export { postAction };

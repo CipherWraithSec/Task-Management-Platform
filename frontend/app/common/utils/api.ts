@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL } from "../contants";
+import { API_URL } from "../constants/api";
 
 const createApi = (cookieString) => {
   const instance = axios.create({
