@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/app/lib/utils/cnUtils";
 
 type MaxWidth = "xs" | "sm" | "md" | "lg" | "xl";
 

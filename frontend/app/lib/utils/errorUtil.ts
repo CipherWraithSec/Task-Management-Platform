@@ -1,11 +1,3 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-
-// Combine class names using clsx and twMerge
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
 // Get a user-friendly error message from the api response
 export const getErrorMessage = (response: any) => {
   if (response?.message) {

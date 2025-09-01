@@ -1,35 +1,27 @@
 "use server";
 
 import axios from "axios";
-import { SignupFormData } from "./test/signup/page";
+import { SignupFormData } from "./auth/signup/page";
 import { jwtDecode } from "jwt-decode";
-import { API_URL } from "./lib/contants";
-import { getErrorMessage } from "./lib/utils";
-import { error } from "console";
-import { redirect } from "next/navigation";
+import { getErrorMessage } from "./lib/utils/errorUtil";
 import { cookies } from "next/headers";
+import createApi from "./lib/utils/apiUtil";
 
-// const API_URL = "http://localhost:3001";
-
-const api = axios.create({
-  baseURL: API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  withCredentials: true, // Send cookies
-});
-
-// const postAction = async (url: string, data: unknown) => {
-//   try {
-//     const response = await api.post("/auth/login", data);
-
-//     return response.data;
-//   } catch (error: any) {
-//     throw error.response.data;
-//   }
-// };
+// const api = axios.create({
+//   baseURL: API_URL,
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+//   withCredentials: true, // Send cookies
+// });
 
 export async function loginAction<T>(url: string, data: unknown): Promise<T> {
+  // Get the cookie from the current request scope
+  const cookieString = cookies().toString();
+
+  // Access the Axios instance
+  const api = createApi(cookieString);
+
   try {
     const response = await api.post(url, data);
 

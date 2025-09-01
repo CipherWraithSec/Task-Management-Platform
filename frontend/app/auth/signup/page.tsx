@@ -26,7 +26,6 @@ import Link from "next/link";
 import { useSignUpMutation } from "@/app/hooks/useAuth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { getErrorMessage } from "@/app/lib/utils";
 
 export type SignupFormData = z.infer<typeof signUpSchema>;
 
