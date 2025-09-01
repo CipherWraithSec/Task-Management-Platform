@@ -8,7 +8,7 @@ export default function AuthLayout({
   return (
     <Container
       maxWidth="xl"
-      className="py-8 flex h-screen m-auto w-full flex-col items-center justify-center bg-muted/40 p-4"
+      className="py-8 flex h-screen m-auto w-full flex-col items-center justify-center p-4"
     >
       {children}
     </Container>

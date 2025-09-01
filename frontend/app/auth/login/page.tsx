@@ -27,7 +27,6 @@ import { useLoginMutation } from "@/app/hooks/useAuth";
 import { toast } from "sonner";
 import { z } from "zod";
 import { loginSchema } from "@/app/lib/schema";
-import { getErrorMessage } from "@/app/lib/utils";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
@@ -48,13 +47,13 @@ export default function Login() {
     mutate(values, {
       onSuccess: (data) => {
         // login(data);
-        console.log(data);
+        console.log("logged in:", data);
         toast.success("Login successful");
         router.push("/");
       },
       onError: (error: any) => {
-        const errorMessage = getErrorMessage(error);
-        toast.error(errorMessage);
+        console.log("Error message for toast:", error.message);
+        toast.error(error.message);
       },
     });
   };
@@ -124,3 +123,23 @@ export default function Login() {
     </Card>
   );
 }
+
+// import LoginCard from "@/app/components/LoginCard";
+// import { getQueryClient } from "@/app/getQueryClient";
+// import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+
+// export default async function LoginPage() {
+//   const queryClient = getQueryClient();
+
+//   // prefetch data server-side
+//   // await queryClient.prefetchQuery({
+//   //   // query key
+//   //   // server action
+//   // });
+
+//   return (
+//     <HydrationBoundary state={dehydrate(queryClient)}>
+//       <LoginCard />
+//     </HydrationBoundary>
+//   );
+// }

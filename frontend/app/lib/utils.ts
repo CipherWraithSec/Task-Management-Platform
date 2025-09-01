@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 // Get a user-friendly error message from the api response
 export const getErrorMessage = (response: any) => {
-  if (response.message) {
+  if (response?.message) {
     // Check if the message is an array from class-validator middleware
     if (Array.isArray(response.message)) {
       return formatErrorMessage(response.message[0]);
