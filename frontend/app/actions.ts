@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import { getErrorMessage } from "./lib/utils/errorUtil";
 import { cookies } from "next/headers";
 import createApi from "./lib/utils/apiUtil";
+import { url } from "inspector";
 
 // const api = axios.create({
 //   baseURL: API_URL,
@@ -88,21 +89,39 @@ export async function postDataAction<T>(
   }
 }
 
-export interface UserResponse {
-  userId: string;
-  username: string;
-  email: string;
-}
+// export interface UserResponse {
+//   userId: string;
+//   username: string;
+//   email: string;
+// }
 
-export async function getUserAction() {
+// export async function getUserAction() {
+//   try {
+//     const response = await api.get<UserResponse>("/users/me");
+//     return response.data;
+//   } catch (error) {
+//     if (axios.isAxiosError(error) && error.response) {
+//       throw error.response.data; // { message: "Unauthorized", statusCode: 401 }
+//     }
+//     throw { message: "Network or unexpected error occurred" };
+//   }
+// }
+
+export async function fetchDataAction<T>(url: string): Promise<T> {
+  // Get the cookie from the current request scope
+  //   const cookieString = cookies().toString();
+  const cookieString = cookies().toString();
+
+  // Access the Axios instance
+  const api = createApi(cookieString);
+
   try {
-    const response = await api.get<UserResponse>("/users/me");
+    const response = await api.get(url);
+
     return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw error.response.data; // { message: "Unauthorized", statusCode: 401 }
-    }
-    throw { message: "Network or unexpected error occurred" };
+  } catch (error: any) {
+    throw getErrorMessage(error.response?.data);
+    // throw error;
   }
 }
 
