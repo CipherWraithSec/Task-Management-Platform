@@ -43,12 +43,16 @@ export const Header = () => {
 
   return (
     <div className="bg-background sticky top-0 z-40 border-b shadow-md">
-      <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8 py-4 gap-4">
-        <h1 className="text-md  md:text-xl font-bold dark:text-white">
-          Task Manager
-        </h1>
+      <div className="flex h-16 items-center justify-between gap-4 px-10 sm:px-6 lg:px-8 py-4">
+        {/* left */}
+        <div className="flex flex-1 items-center gap-2 max-sm:hidden">
+          <h1 className="text-md  md:text-xl font-bold dark:text-white">
+            Task Manager
+          </h1>
+        </div>
 
-        {/* middle */}
+        {/* Middle area */}
+
         <div className="relative flex-1">
           <Input
             // id={`input-${id}`}
@@ -62,11 +66,7 @@ export const Header = () => {
             <SearchIcon size={16} />
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          {/* <Button variant="ghost" size="icon">
-            <Bell />
-          </Button> */}
-
+        <div className="flex flex-1 items-center justify-end gap-4">
           {/* right */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

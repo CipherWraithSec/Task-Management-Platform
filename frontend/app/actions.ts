@@ -3,7 +3,7 @@
 import { SignupFormData } from "./auth/signup/page";
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
-import createApi from "./common/utils/api";
+import createApi from "./lib/utils/api";
 
 // Capitalize the first letter of the error message
 const formatErrorMessage = (message: string) => {

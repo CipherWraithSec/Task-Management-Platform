@@ -26,7 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLoginMutation } from "@/app/hooks/useAuth";
 import { toast } from "sonner";
 import { z } from "zod";
-import { loginSchema } from "@/app/common/schema";
+import { loginSchema } from "@/app/lib/schema";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 

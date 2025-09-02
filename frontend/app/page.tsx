@@ -2,6 +2,7 @@
 import { useUserQuery } from "./hooks/useAuth";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import SubHeader from "./components/subheader";
 
 export default function Home() {
   const { data, isPending, isError, error } = useUserQuery() as {
@@ -21,11 +22,14 @@ export default function Home() {
   }, [isError, error]);
 
   return (
-    <div className="flex h-screen w-full">
-      <div className="m-auto">
-        <h1 className="text-4xl font-bold">Welcome</h1>
+    <div className="flex max-sm:flex-col h-screen bg-secondary dark:bg-background">
+      <div className="flex-1 p-8 overflow-auto ">
+        <SubHeader />
+        <div className="m-auto">
+          <h1 className="text-4xl font-bold">Welcome</h1>
 
-        <p className="mt-4"> {JSON.stringify(data)}</p>
+          <p className="mt-4"> {JSON.stringify(data)}</p>
+        </div>
       </div>
     </div>
   );

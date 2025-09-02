@@ -1,4 +1,4 @@
-import { fetchData, postData } from "@/app/common/fetchUtil";
+import { fetchData, postData } from "@/app/lib/fetchUtil";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { SignupFormData } from "../auth/signup/page";
 import { fetchDataAction, loginAction, postDataAction } from "../actions";
