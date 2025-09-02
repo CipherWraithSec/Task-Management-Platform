@@ -5,6 +5,11 @@ import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 import createApi from "./lib/utils/api";
 
+// Return boolean on if the cookie has been set (if we're authenticated)
+export default async function authenticated() {
+  return !!cookies().get("Authentication");
+}
+
 // Capitalize the first letter of the error message
 const formatErrorMessage = (message: string) => {
   return message.charAt(0).toUpperCase() + message.slice(1);

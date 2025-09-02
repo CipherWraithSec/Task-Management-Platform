@@ -123,23 +123,3 @@ export default function Login() {
     </Card>
   );
 }
-
-// import LoginCard from "@/app/components/LoginCard";
-// import { getQueryClient } from "@/app/getQueryClient";
-// import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-
-// export default async function LoginPage() {
-//   const queryClient = getQueryClient();
-
-//   // prefetch data server-side
-//   // await queryClient.prefetchQuery({
-//   //   // query key
-//   //   // server action
-//   // });
-
-//   return (
-//     <HydrationBoundary state={dehydrate(queryClient)}>
-//       <LoginCard />
-//     </HydrationBoundary>
-//   );
-// }

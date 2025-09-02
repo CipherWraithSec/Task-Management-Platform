@@ -2,12 +2,14 @@ import { useAppSelector } from "@/app/hooks/redux";
 import { ITaskData } from "@/app/types/types";
 import { createSlice, nanoid, type PayloadAction } from "@reduxjs/toolkit";
 
-type taskManagerState = {
+type taskState = {
   taskData: ITaskData[];
+  isAuthenticated: boolean
 };
 
-const initialState: taskManagerState = {
+const initialState: taskState = {
   taskData: [],
+  isAuthenticated: 
 };
 
 const taskSlice = createSlice({
