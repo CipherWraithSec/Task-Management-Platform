@@ -27,13 +27,15 @@ import { useLoginMutation } from "@/app/hooks/useAuth";
 import { toast } from "sonner";
 import { z } from "zod";
 import { loginSchema } from "@/app/lib/schema";
+import { useAppDispatch } from "@/app/hooks/redux";
+import { setAuthStatus } from "@/app/lib/redux/features/auth/authSlice";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const router = useRouter();
   //   const { login } = useAuth();
-
+  const dispatch = useAppDispatch();
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -49,6 +51,7 @@ export default function Login() {
         // login(data);
         console.log("logged in:", data);
         toast.success("Login successful");
+        dispatch(setAuthStatus(true));
         router.push("/");
       },
       onError: (error: any) => {

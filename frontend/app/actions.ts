@@ -4,10 +4,20 @@ import { SignupFormData } from "./auth/signup/page";
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 import createApi from "./lib/utils/api";
+import { AUTHENTICATION_COOKIE } from "./lib/constants/api";
+import { redirect } from "next/navigation";
 
 // Return boolean on if the cookie has been set (if we're authenticated)
-export default async function authenticated() {
-  return !!cookies().get("Authentication");
+export async function authenticated() {
+  // If the cookie exists on the current request scope
+  const cookieStore = await cookies();
+  return !!cookieStore.get(AUTHENTICATION_COOKIE)?.value;
+}
+
+export async function logout() {
+  const cookieStore = await cookies();
+  cookieStore.delete(AUTHENTICATION_COOKIE);
+  redirect("/auth/login");
 }
 
 // Capitalize the first letter of the error message
@@ -43,7 +53,7 @@ const setAuthCookie = (response, cookieStore) => {
     // Handle the case where the token is undefined
     if (token) {
       cookieStore.set({
-        name: "Authentication",
+        name: AUTHENTICATION_COOKIE,
         value: token,
         secure: false, // Set to true for https
         httpOnly: true,
