@@ -27,6 +27,7 @@ export class AuthService {
 
     const tokenPayload: TokenPayload = {
       userId: user.id,
+      username: user.username,
     };
 
     // generate a token
@@ -46,6 +47,7 @@ export class AuthService {
     try {
       const user = await this.usersService.getUser({ email });
 
+      console.log('The USER:', user);
       // verify password
       const authenticated = await bcrypt.compare(password, user.password);
       if (!authenticated) {

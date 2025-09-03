@@ -8,9 +8,81 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Enum for task statuses
+enum TaskStatus {
+  pending
+  in_progress
+  completed
+}
+
+// model User {
+//   id       Int    @id @default(autoincrement())
+//   username String
+//   email    String @unique
+//   password String
+// }
+
+// User model for authentication
 model User {
-  id       Int    @id @default(autoincrement())
-  username String
-  email    String @unique
-  password String
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  username  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  tasks     Task[]
+  histories TaskHistory[]
+}
+
+// model Task {
+//   id          Int    @id @default(autoincrement())
+//   title       String
+//   description String
+//   status      Enum
+//   user        User   @relation(fields: [userId], references: [id])
+//   userId      Int
+// }
+
+// Task model with soft deletion and indexing for performance
+model Task {
+  id          String     @id @default(uuid())
+  title       String     @db.VarChar(255)
+  description String?
+  status      TaskStatus @default(pending)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  // Soft deletion field (if set, task is considered deleted)
+  deletedAt   DateTime?
+
+  // Relation (creator of the task)
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  // Relation (task history entries)
+  histories TaskHistory[]
+
+  // Indexes to speed up common queries
+  @@index([status], name: "idx_tasks_status")
+  @@index([createdAt], name: "idx_tasks_createdAt")
+  @@index([title], name: "idx_tasks_title")
+}
+
+// TaskHistory model to track changes in tasks
+model TaskHistory {
+  id             String      @id @default(uuid())
+  taskId         String
+  task           Task        @relation(fields: [taskId], references: [id])
+  previousStatus TaskStatus?
+  newStatus      TaskStatus
+  changeReason   String?
+  changedAt      DateTime    @default(now())
+
+  // Who performed the change
+  changedById String
+  changedBy   User   @relation(fields: [changedById], references: [id])
+
+  // Index on taskId to optimize history retrieval
+  @@index([taskId], name: "idx_task_history_taskId")
 }

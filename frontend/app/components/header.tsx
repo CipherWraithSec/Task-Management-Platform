@@ -17,7 +17,7 @@ import { setAuthStatus, useAuth } from "../lib/redux/features/auth/authSlice";
 import { routes, unauthenticatedRoutes } from "../lib/constants/routes";
 import { logout } from "../actions";
 import { useAppDispatch } from "../hooks/redux";
-import { useLogoutMutation } from "../hooks/useAuth";
+import { useLogoutMutation, useUserQuery } from "../hooks/useAuth";
 import { useRouter } from "next/navigation";
 // import { Link, useLoaderData, useLocation, useNavigate } from "react-router";
 // import { WorkspaceAvatar } from "../workspace/workspace-avatar";
@@ -50,6 +50,10 @@ export const Header = () => {
   // navigate(`${basePath}?workspaceId=${workspace._id}`);
   // }
   // };
+
+  const { data } = useUserQuery() as {
+    data: any;
+  };
 
   const { mutate, isPending } = useLogoutMutation();
 
@@ -89,9 +93,8 @@ export const Header = () => {
             <DropdownMenuTrigger asChild>
               <button className="rounded-full border p-1 w-8 h-8">
                 <Avatar className="w-8 h-8">
-                  {/* <AvatarImage src={user?.profilePicture} alt={user?.name} /> */}
                   <AvatarFallback className="bg-primary text-primary-foreground">
-                    {/* {user?.name?.charAt(0).toUpperCase()} */}
+                    {data?.username?.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
               </button>
