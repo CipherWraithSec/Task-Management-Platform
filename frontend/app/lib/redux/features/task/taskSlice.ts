@@ -1,13 +1,13 @@
 import { useAppSelector } from "@/app/hooks/redux";
 import { ITaskData } from "@/app/types/types";
-import { createSlice, nanoid, type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 type taskManagerState = {
-  taskData: ITaskData[];
+  tasks: ITaskData[];
 };
 
 const initialState: taskManagerState = {
-  taskData: [],
+  tasks: [],
 };
 
 const taskSlice = createSlice({

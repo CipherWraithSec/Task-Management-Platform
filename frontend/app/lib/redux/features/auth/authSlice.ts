@@ -13,11 +13,10 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // Reducer to set authentication status to true
     logIn: (state) => {
       state.isAuthenticated = true;
     },
-    // Reducer to set authentication status to false
+
     logOut: (state) => {
       state.isAuthenticated = false;
     },

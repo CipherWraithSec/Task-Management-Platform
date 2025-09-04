@@ -79,7 +79,7 @@ export const Header = () => {
               className="peer h-8 w-full max-w-xl  ps-8 pe-2"
               placeholder={"Search"}
               type="search"
-              value={"Search"}
+              // value={"Search"}
               // onChange={(e) => onSearchChange?.(e.target.value)}
             />
             <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-2 peer-disabled:opacity-50">

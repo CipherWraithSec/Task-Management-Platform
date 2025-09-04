@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import taskReducer from "./features/task/taskSlice";
 import authReducer from "./features/auth/authSlice";
+import modalReducer from "./features/modal/modalSlice";
 
 // Factory function called on server to create a new store for each SSR request to keep state isolated
 export const makeStore = () => {
@@ -8,6 +9,7 @@ export const makeStore = () => {
     reducer: {
       task: taskReducer,
       auth: authReducer,
+      modal: modalReducer,
     },
   });
 };

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { optional, z } from "zod";
 
 export const loginSchema = z.object({
   email: z.email("Invalid email address"),
@@ -19,8 +19,8 @@ export const signUpSchema = z
     message: "Passwords do not match",
   });
 
-export const createTaskSchema = z.object({
+export const addTaskSchema = z.object({
   title: z.string().min(1, "Task title is required"),
-  description: z.string().min(1, "Task description is required"),
-  status: z.enum(["To Do", "In Progress", "Done"]),
+  description: z.string().optional(),
+  status: z.enum(["pending", "in_progress", "completed"]),
 });

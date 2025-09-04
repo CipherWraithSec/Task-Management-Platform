@@ -6,17 +6,18 @@ export type User = {
   token: string;
 };
 
-enum taskStatus {
-      Pending: "pending",        
-      InProgress: "in-progress",      
-      Completed: "completed"      
-    }
-
+export enum TaskStatus {
+  Pending = "pending",
+  In_Progress = "in_progress",
+  Completed = "completed",
+}
 export interface ITaskData {
   id: string;
   title: string;
-  description?: string;
-  status: taskStatus;
+  description?: string | null;
+  status: TaskStatus;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt?: Date | null;
+  createdById: string;
 }

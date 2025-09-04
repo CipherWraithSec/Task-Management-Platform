@@ -128,7 +128,6 @@ export async function fetchDataAction<T>(url: string): Promise<T> {
     return response.data;
   } catch (error: any) {
     throw await getErrorMessage(error.response?.data);
-    // throw error;
   }
 }
 
