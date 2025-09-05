@@ -52,6 +52,6 @@ export class TasksController {
     @Param('id') id: string,
     @CurrentUser() user: TokenPayload,
   ): Promise<void> {
-    return this.taskService.deleteTask(id, user.userId);
+    return this.taskService.softDeleteTask(id, user.userId);
   }
 }

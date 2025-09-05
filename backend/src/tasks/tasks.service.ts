@@ -36,10 +36,10 @@ export class TasksService {
     });
   }
 
-  async deleteTask(id: string, deletedById: string): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    await this.prismaService.task.delete({
-      where: { id },
+  async softDeleteTask(id: string, deletedById: string): Promise<void> {
+    return this.prisma.task.update({
+      where: { id: taskId },
+      data: { deletedAt: new Date() },
     });
   }
 }
