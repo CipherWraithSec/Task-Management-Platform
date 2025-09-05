@@ -21,6 +21,6 @@ export const signUpSchema = z
 
 export const addTaskSchema = z.object({
   title: z.string().min(1, "Task title is required"),
-  description: z.string().optional(),
+  description: z.string().optional().or(z.null()),
   status: z.enum(["pending", "in_progress", "completed"]),
 });

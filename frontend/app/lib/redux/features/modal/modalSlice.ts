@@ -3,12 +3,12 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 type modalState = {
   isDeleteModalOpen: boolean;
-  isAddTaskModalOpen: boolean;
+  isTaskModalOpen: boolean;
 };
 
 const initialState: modalState = {
   isDeleteModalOpen: false,
-  isAddTaskModalOpen: false,
+  isTaskModalOpen: false,
 };
 
 const modalSlice = createSlice({
@@ -18,13 +18,13 @@ const modalSlice = createSlice({
     setOpenDeleteModal: (state, action: PayloadAction<boolean>) => {
       state.isDeleteModalOpen = action.payload;
     },
-    setOpenAddTaskModal: (state, action: PayloadAction<boolean>) => {
-      state.isAddTaskModalOpen = action.payload;
+    setOpenTaskModal: (state, action: PayloadAction<boolean>) => {
+      state.isTaskModalOpen = action.payload;
     },
   },
 });
 
 export const useModal = () => useAppSelector((state) => state.modal);
 
-export const { setOpenDeleteModal, setOpenAddTaskModal } = modalSlice.actions;
+export const { setOpenDeleteModal, setOpenTaskModal } = modalSlice.actions;
 export default modalSlice.reducer;

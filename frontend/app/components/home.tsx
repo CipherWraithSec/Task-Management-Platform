@@ -1,5 +1,7 @@
 "use client";
 
+import TaskModal from "./TaskModal";
+import DeleteModal from "./DeleteModal";
 import SubHeader from "./Subheader";
 import TaskList from "./TaskList";
 
@@ -9,6 +11,8 @@ export default function Home() {
       <div className="flex-1 p-8 overflow-auto ">
         <SubHeader />
         <TaskList />
+        <TaskModal />
+        <DeleteModal />
       </div>
     </div>
   );

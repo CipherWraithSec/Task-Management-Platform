@@ -131,22 +131,39 @@ export async function fetchDataAction<T>(url: string): Promise<T> {
   }
 }
 
-// export interface UserResponse {
-//   userId: string;
-//   username: string;
-//   email: string;
-// }
+export async function updateDataAction<T>(
+  url: string,
+  data: unknown
+): Promise<T> {
+  // Get the cookie from the current request scope
+  const cookieStore = await cookies();
+  const cookieString = cookieStore.toString();
 
-// export async function getUserAction() {
-//   try {
-//     const response = await api.get<UserResponse>("/users/me");
-//     return response.data;
-//   } catch (error) {
-//     if (axios.isAxiosError(error) && error.response) {
-//       throw error.response.data; // { message: "Unauthorized", statusCode: 401 }
-//     }
-//     throw { message: "Network or unexpected error occurred" };
-//   }
-// }
+  // Access the Axios instance
+  const api = createApi(cookieString);
 
-// export { postAction };
+  try {
+    const response = await api.patch(url, data);
+
+    return response.data;
+  } catch (error: any) {
+    throw await getErrorMessage(error.response?.data);
+  }
+}
+
+export async function deleteDataAction<T>(url: string): Promise<T> {
+  // Get the cookie from the current request scope
+  const cookieStore = await cookies();
+  const cookieString = cookieStore.toString();
+
+  // Access the Axios instance
+  const api = createApi(cookieString);
+
+  try {
+    const response = await api.delete(url);
+
+    return response.data;
+  } catch (error: any) {
+    throw await getErrorMessage(error.response?.data);
+  }
+}

@@ -1,11 +1,8 @@
 "use client";
 
 import React from "react";
-// import {Task} from "@/types/types"
 import { Button } from "./ui/button";
 import { MoreVertical } from "lucide-react";
-// import { useTaskStore } from "@/store/taskStore";
-// import { useModalStore } from "@/store/modalStore";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,10 +10,27 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { ITaskData } from "../types/types";
+import { setTask } from "../lib/redux/features/task/taskSlice";
+import {
+  setOpenTaskModal,
+  setOpenDeleteModal,
+} from "../lib/redux/features/modal/modalSlice";
+import { useAppDispatch } from "../hooks/redux";
 
 const MoreMenu = ({ task }: { task: ITaskData }) => {
-  // const { setTaskToDelete, setNewTask } = useTaskStore();
-  // const {  setIsDeleteModalOpen, setIsAddModalOpen } = useModalStore();
+  const dispatch = useAppDispatch();
+
+  // To open the delete modal
+  const handleDeleteTask = () => {
+    dispatch(setTask(task));
+    dispatch(setOpenDeleteModal(true));
+  };
+
+  // To open the edit modal
+  const handleEditTask = () => {
+    dispatch(setTask(task));
+    dispatch(setOpenTaskModal(true));
+  };
 
   return (
     <DropdownMenu>
@@ -26,20 +40,10 @@ const MoreMenu = ({ task }: { task: ITaskData }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem
-        // onClick={() => {
-        //   setNewTask(task);
-        //   setIsAddModalOpen(true);
-        // }}
-        >
+        <DropdownMenuItem onClick={() => handleEditTask()}>
           Edit
         </DropdownMenuItem>
-        <DropdownMenuItem
-        // onClick={() => {
-        //   setTaskToDelete(task._id);
-        //   setIsDeleteModalOpen(true);
-        // }}
-        >
+        <DropdownMenuItem onClick={() => handleDeleteTask()}>
           Delete
         </DropdownMenuItem>
       </DropdownMenuContent>

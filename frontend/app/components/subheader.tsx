@@ -3,7 +3,7 @@ import { Plus, PlusIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { AppToggle } from "./ui/navbar-16";
 import { useAppDispatch } from "@/app/hooks/redux";
-import { setOpenAddTaskModal } from "@/app/lib/redux/features/modal/modalSlice";
+import { setOpenTaskModal } from "@/app/lib/redux/features/modal/modalSlice";
 // import { useModalStore } from "@/store/modalStore"
 // import { useDashboardStore } from "@/store/dashboardStore"
 
@@ -20,7 +20,7 @@ const SubHeader = () => {
         <Button
           size="sm"
           className="text-sm max-sm:aspect-square max-sm:p-0"
-          onClick={() => dispatch(setOpenAddTaskModal(true))}
+          onClick={() => dispatch(setOpenTaskModal(true))}
         >
           <PlusIcon
             className="opacity-60 sm:-ms-1"

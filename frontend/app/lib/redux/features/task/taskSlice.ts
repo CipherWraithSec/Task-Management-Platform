@@ -3,22 +3,24 @@ import { ITaskData } from "@/app/types/types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 type taskManagerState = {
-  tasks: ITaskData[];
+  activeTask: ITaskData | null;
 };
 
 const initialState: taskManagerState = {
-  tasks: [],
+  activeTask: null,
 };
 
 const taskSlice = createSlice({
   name: "tasks",
   initialState,
   reducers: {
-    addTask: (state, action: PayloadAction<ITaskData>) => {},
+    setTask: (state, action: PayloadAction<ITaskData | null>) => {
+      state.activeTask = action.payload;
+    },
   },
 });
 
 export const useTasks = () => useAppSelector((state) => state.task);
 
-export const { addTask } = taskSlice.actions;
+export const { setTask } = taskSlice.actions;
 export default taskSlice.reducer;
