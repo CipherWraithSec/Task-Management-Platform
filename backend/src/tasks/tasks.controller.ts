@@ -14,7 +14,7 @@ import { CreateTaskDto } from './dto/createTask.dto';
 import { CurrentUser } from '../auth/currentUser.decorator';
 import type { TokenPayload } from '../auth/tokenPayload.interface';
 import { TasksService } from './tasks.service';
-import { Task } from 'generated/prisma';
+import { Task, TaskHistory } from 'generated/prisma';
 import { UpdateTaskDto } from './dto/updateTask.dto';
 
 @Controller('tasks')
@@ -34,6 +34,14 @@ export class TasksController {
   @UseGuards(JwtAuthGuard)
   async getTasks() {
     return this.taskService.getTasks();
+  }
+
+  @Get('/history/:taskId')
+  @UseGuards(JwtAuthGuard)
+  async getTaskHistoryById(
+    @Param('taskId') taskId: string,
+  ): Promise<TaskHistory[]> {
+    return this.taskService.getTaskHistory(taskId);
   }
 
   @Patch(':id')

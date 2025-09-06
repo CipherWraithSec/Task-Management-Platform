@@ -21,3 +21,13 @@ export interface ITaskData {
   deletedAt?: Date | null;
   createdById: string;
 }
+
+export interface ITaskHistory {
+  id: string;
+  taskId: string;
+  previousStatus?: string | null;
+  newStatus?: string | null;
+  changeReason?: string | null;
+  changedById: string;
+  changedAt: Date;
+}

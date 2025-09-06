@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect } from "react";
 import TaskModal from "./TaskModal";
 import { useAddTaskMutation, useTaskQuery } from "../hooks/useTask";
@@ -24,7 +25,10 @@ import { format } from "date-fns";
 import MoreMenu from "./MoreMenu";
 import { ITaskData, TaskStatus } from "../types/types";
 import { useAppDispatch } from "../hooks/redux";
-import { setOpenTaskModal } from "../lib/redux/features/modal/modalSlice";
+import {
+  setOpenTaskHistoryModal,
+  setOpenTaskModal,
+} from "../lib/redux/features/modal/modalSlice";
 import { setTask } from "../lib/redux/features/task/taskSlice";
 import { Loader } from "./loader";
 
@@ -45,6 +49,11 @@ const TaskList = () => {
         toast.error(error.message);
       },
     });
+  };
+
+  const handleTaskHistory = (task: ITaskData) => {
+    dispatch(setTask(task));
+    dispatch(setOpenTaskHistoryModal(true));
   };
 
   return (
@@ -74,7 +83,10 @@ const TaskList = () => {
               <TableBody>
                 {data?.map((task) => (
                   <TableRow key={task.id} className="">
-                    <TableCell className="space-y-2  text-nowrap w-1/2 capitalize">
+                    <TableCell
+                      className="space-y-2  text-nowrap w-1/2 capitalize"
+                      onClick={() => handleTaskHistory(task)}
+                    >
                       <div>
                         <h3 className="font-semibold text-lg md:text-xl">
                           {task.title}

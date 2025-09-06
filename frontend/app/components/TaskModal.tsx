@@ -51,27 +51,37 @@ const TaskModal = () => {
   const form = useForm<AddTaskFormData>({
     resolver: zodResolver(addTaskSchema),
     defaultValues: {
-      title: "", // Set initial values to empty strings
+      title: "",
       description: "",
       status: TaskStatus.Pending,
     },
   });
 
-  // Effect to reset the form with `activeTask` details when the modal opens
+  // Handle both "Edit" and "Add Task" scenarios
   useEffect(() => {
-    if (isTaskModalOpen && activeTask) {
-      form.reset({
-        title: activeTask.title,
-        description: activeTask.description,
-        status: activeTask.status,
-      });
+    if (isTaskModalOpen) {
+      if (activeTask) {
+        // If there's an activeTask (updating), reset the form with its data
+        form.reset({
+          title: activeTask.title,
+          description: activeTask.description,
+          status: activeTask.status,
+        });
+      } else {
+        // If there is no activeTask (creating), reset to default values
+        form.reset({
+          title: "",
+          description: "",
+          status: TaskStatus.Pending,
+        });
+      }
     }
   }, [isTaskModalOpen, activeTask, form]);
 
-  // Toggle modal and reset form
+  // Toggle modal and ensure the Redux state is reset
   const handleOnOpenChange = (open: boolean) => {
     if (!open) {
-      form.reset(); //
+      // Reset the form when the modal is closed
       if (activeTask) {
         dispatch(setTask(null));
       }
@@ -81,27 +91,24 @@ const TaskModal = () => {
 
   const { mutate, isPending } = useAddTaskMutation();
 
-  // Handle form submission
   const onSubmit = (values: AddTaskFormData) => {
     mutate(values, {
       onSuccess: () => {
         if (!activeTask) {
           toast.success("Task created successfully");
-        }
-        if (activeTask) {
+        } else {
           toast.success("Task updated successfully");
           dispatch(setTask(null));
         }
-        form.reset();
         dispatch(setOpenTaskModal(false));
       },
       onError: (error: any) => {
-        console.log("Error message for toast:", error.message);
         toast.error(error.message);
       },
     });
   };
 
+  console.log("Task Modal Rendered:", { isTaskModalOpen, activeTask });
   return (
     <Dialog open={isTaskModalOpen} onOpenChange={handleOnOpenChange}>
       <DialogContent>

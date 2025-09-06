@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/createTask.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Task } from 'generated/prisma';
+import { Task, TaskHistory } from 'generated/prisma';
 import { UpdateTaskDto } from './dto/updateTask.dto';
-import e from 'express';
 
 @Injectable()
 export class TasksService {
@@ -123,6 +122,26 @@ export class TasksService {
     await this.prismaService.task.update({
       where: { id },
       data: { deletedAt: new Date() },
+    });
+  }
+
+  // Retrieve a task by id (active tasks only) with its related history entries.
+  // async getTaskById(taskId: string) {
+  //   const task = await this.prismaService.task.findFirst({
+  //     where: { id: taskId, deletedAt: null },
+  //     include: { histories: true },
+  //   });
+  //   if (!task) {
+  //     throw new NotFoundException('Task not found');
+  //   }
+  //   return task;
+  // }
+
+  // Retrieve history for a given task.
+  async getTaskHistory(taskId: string): Promise<TaskHistory[]> {
+    return this.prismaService.taskHistory.findMany({
+      where: { taskId },
+      orderBy: { changedAt: 'desc' },
     });
   }
 }

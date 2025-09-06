@@ -1,17 +1,17 @@
 "use client";
 import { Plus, PlusIcon } from "lucide-react";
 import { Button } from "./ui/button";
-import { AppToggle } from "./ui/navbar-16";
 import { useAppDispatch } from "@/app/hooks/redux";
 import { setOpenTaskModal } from "@/app/lib/redux/features/modal/modalSlice";
-// import { useModalStore } from "@/store/modalStore"
-// import { useDashboardStore } from "@/store/dashboardStore"
+import { setTask } from "../lib/redux/features/task/taskSlice";
 
 const SubHeader = () => {
-  //   const { setIsAddModalOpen } = useModalStore();
-  //   const { boardView } = useDashboardStore();
-
   const dispatch = useAppDispatch();
+
+  const handleAddTask = () => {
+    dispatch(setTask(null));
+    dispatch(setOpenTaskModal(true));
+  };
 
   return (
     <div className="mb-4 flex items-center justify-between  ">
@@ -20,7 +20,7 @@ const SubHeader = () => {
         <Button
           size="sm"
           className="text-sm max-sm:aspect-square max-sm:p-0"
-          onClick={() => dispatch(setOpenTaskModal(true))}
+          onClick={() => handleAddTask()}
         >
           <PlusIcon
             className="opacity-60 sm:-ms-1"

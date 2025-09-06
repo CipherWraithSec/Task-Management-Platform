@@ -6,9 +6,10 @@ import {
   postDataAction,
   updateDataAction,
 } from "../actions";
-import { ITaskData, TaskStatus } from "../types/types";
+import { ITaskData, ITaskHistory } from "../types/types";
 import { useTasks } from "../lib/redux/features/task/taskSlice";
 
+// Add/Update task
 export const useAddTaskMutation = () => {
   const queryClient = useQueryClient();
 
@@ -44,10 +45,15 @@ export const useAddTaskMutation = () => {
           }
         }
       );
+
+      queryClient.invalidateQueries({
+        queryKey: ["taskHistory"],
+      });
     },
   });
 };
 
+// Retrieve a list of tasks
 export const useTaskQuery = () => {
   return useQuery({
     queryKey: ["tasks"],
@@ -55,13 +61,32 @@ export const useTaskQuery = () => {
   });
 };
 
+// Retrieve history for a given task.
+export const useTaskHistoryQuery = (taskId: string | undefined) => {
+  return useQuery({
+    // When the taskId changes, it should fetch new data.
+    queryKey: ["taskHistory", taskId],
+    queryFn: (): Promise<ITaskHistory[]> =>
+      fetchDataAction(`/tasks/history/${taskId}`),
+
+    // Query only runs when there's a valid taskId
+    enabled: !!taskId,
+  });
+};
+
+// Soft-delete a task
 export const useDeleteTaskMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (id: string): Promise<void> => deleteDataAction(`/tasks/${id}`),
     onSuccess: () => {
-      queryClient.invalidateQueries(["tasks"]);
+      queryClient.invalidateQueries({
+        queryKey: ["tasks"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["taskHistory"],
+      });
     },
   });
 };
