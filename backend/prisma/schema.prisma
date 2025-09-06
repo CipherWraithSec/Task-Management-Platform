@@ -71,13 +71,13 @@ model Task {
 
 // TaskHistory model to track changes in tasks
 model TaskHistory {
-  id             String      @id @default(uuid())
+  id             String   @id @default(uuid())
   taskId         String
-  task           Task        @relation(fields: [taskId], references: [id])
-  previousStatus TaskStatus?
-  newStatus      TaskStatus
+  task           Task     @relation(fields: [taskId], references: [id])
+  previousStatus String?
+  newStatus      String
   changeReason   String?
-  changedAt      DateTime    @default(now())
+  changedAt      DateTime @default(now())
 
   // Who performed the change
   changedById String
