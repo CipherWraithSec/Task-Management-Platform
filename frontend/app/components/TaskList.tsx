@@ -104,12 +104,12 @@ const TaskList = () => {
             </div>
           ) : (
             <div>
-              <Table>
+              <Table className="overflow-x-auto">
                 <TableHeader>
                   <TableRow>
                     <TableHead
                       onClick={() => handleSort("title")}
-                      className="cursor-pointer"
+                      className="cursor-text-nowrap cursor-pointer hidden md:table-cell"
                     >
                       Tasks
                     </TableHead>
@@ -148,11 +148,11 @@ const TaskList = () => {
                         <Select
                           value={task.status}
                           defaultValue={task.status}
-                          onValueChange={async (value) =>
+                          onValueChange={async (value: TaskData["status"]) =>
                             handleOnValueChange(value, task)
                           }
                         >
-                          <SelectTrigger className="bg-background w-1/2">
+                          <SelectTrigger className="bg-background   w-1/2 max-md:w-full">
                             <SelectValue placeholder={"Status"} />
                           </SelectTrigger>
                           <SelectContent>
@@ -170,7 +170,7 @@ const TaskList = () => {
                         </Select>
                       </TableCell>
 
-                      <TableCell className="text-nowrap ">
+                      <TableCell className="cursor-text-nowrap cursor-pointer hidden md:table-cell">
                         {task.createdAt &&
                           format(task.createdAt, "MMM d, yyyy")}
                       </TableCell>
@@ -181,16 +181,9 @@ const TaskList = () => {
                     </TableRow>
                   ))}
                 </TableBody>
-                <TableFooter>
-                  <TableRow>
-                    <TableCell className="text-left text-sm" colSpan={5}>
-                      Total Tasks : {data?.total}
-                    </TableCell>
-                  </TableRow>
-                </TableFooter>
               </Table>
 
-              <div className="flex justify-end items-center space-x-4 mt-4">
+              <div className="flex justify-end items-center space-x-4 mt-14">
                 <Button onClick={handlePreviousPage} disabled={page === 1}>
                   Previous
                 </Button>

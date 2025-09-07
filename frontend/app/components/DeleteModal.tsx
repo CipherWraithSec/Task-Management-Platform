@@ -31,20 +31,12 @@ const DeleteModal = () => {
     dispatch(setOpenDeleteModal(false));
   };
 
-  const { mutate, isPending } = useDeleteTaskMutation();
+  const { mutate } = useDeleteTaskMutation();
 
   // To delete the task
   const handleDeleteTask = async () => {
     if (activeTask) {
-      mutate(activeTask.id, {
-        onSuccess: () => {
-          toast.success("Task deleted successfully");
-        },
-        onError: (error: any) => {
-          toast.error(error.message);
-        },
-      });
-
+      mutate(activeTask.id);
       dispatch(setTask(null));
       dispatch(setOpenDeleteModal(false));
     }

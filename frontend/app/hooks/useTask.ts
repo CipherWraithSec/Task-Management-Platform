@@ -11,6 +11,7 @@ import {
 import { TaskData, ITaskHistory } from "../types/types";
 import { useTasks } from "../lib/redux/features/task/taskSlice";
 import useDebounce from "./useDebounce";
+import { toast } from "sonner";
 
 type PaginatedResponse<T> = {
   items: T[];
@@ -28,7 +29,6 @@ export const useAddTaskMutation = () => {
     mutationFn: (data: AddTaskFormData): Promise<TaskData> => {
       // If there's an active task, update it; otherwise, create a new one
       if (activeTask) {
-        console.log("Updating Task:", data);
         return updateDataAction(`/tasks/${activeTask.id}`, data);
       } else {
         return postDataAction("/tasks", data);
@@ -104,12 +104,19 @@ export const useDeleteTaskMutation = () => {
   return useMutation({
     mutationFn: (id: string): Promise<void> => deleteDataAction(`/tasks/${id}`),
     onSuccess: () => {
+      // Show success toast
+      toast.success("Task deleted successfully!");
+
+      // Invalidate and refetch queries
       queryClient.invalidateQueries({
         queryKey: ["tasks"],
       });
       queryClient.invalidateQueries({
         queryKey: ["taskHistory"],
       });
+    },
+    onError: (error: any) => {
+      toast.error(`Error deleting task: ${error.message}`);
     },
   });
 };
