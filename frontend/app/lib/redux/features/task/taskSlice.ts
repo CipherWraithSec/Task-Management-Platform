@@ -27,10 +27,10 @@ const taskSlice = createSlice({
     setTask: (state, action: PayloadAction<TaskData | null>) => {
       state.activeTask = action.payload;
     },
-    setPage: (state, action) => {
+    setPage: (state, action: PayloadAction<number>) => {
       state.page = action.payload;
     },
-    setLimit: (state, action) => {
+    setLimit: (state, action: PayloadAction<number>) => {
       state.limit = action.payload;
     },
     setSort: (

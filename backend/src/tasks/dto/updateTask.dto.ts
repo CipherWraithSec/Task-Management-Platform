@@ -6,6 +6,7 @@ import {
   IsDate,
 } from 'class-validator';
 import { TaskStatus } from '../../common/constants/task.constant';
+import { Type } from 'class-transformer';
 
 export class UpdateTaskDto {
   @IsOptional()
@@ -34,14 +35,17 @@ export class UpdateTaskDto {
 
   @IsOptional()
   @IsDate()
+  @Type(() => Date)
   createdAt?: Date;
 
   @IsOptional()
   @IsDate()
+  @Type(() => Date)
   updatedAt?: Date;
 
   @IsOptional()
   @IsDate()
+  @Type(() => Date)
   deletedAt?: Date | null;
 
   @IsOptional()

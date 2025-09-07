@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <div className="flex max-sm:flex-col h-screen bg-secondary dark:bg-background">
       <div className="flex-1 p-8 overflow-auto ">
-        {/* <SubHeader /> */}
+        <SubHeader />
         <TaskList />
         {isTaskModalOpen && <TaskModal />}
         {isDeleteModalOpen && <DeleteModal />}

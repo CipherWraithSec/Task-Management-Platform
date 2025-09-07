@@ -45,7 +45,7 @@ const TaskList = () => {
   const { mutate } = useAddTaskMutation();
 
   // Handle task status change
-  const handleOnValueChange = (value: string, task: TaskData) => {
+  const handleOnValueChange = (value: TaskData["status"], task: TaskData) => {
     // Dispatch the task first if needed
     dispatch(setTask(task));
 
@@ -72,13 +72,13 @@ const TaskList = () => {
 
   const handleNextPage = () => {
     if (data && page < Math.ceil(data.total / limit)) {
-      dispatch(setPage({ page: page + 1, limit }));
+      dispatch(setPage(page + 1));
     }
   };
 
   const handlePreviousPage = () => {
     if (page > 1) {
-      dispatch(setPage({ page: page - 1, limit }));
+      dispatch(setPage(page - 1));
     }
   };
 

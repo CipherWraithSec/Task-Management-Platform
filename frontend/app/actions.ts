@@ -124,8 +124,7 @@ export async function fetchDataAction<T>(
 
   // Access the Axios instance
   const api = createApi(cookieString);
-  console.log("Fetching URL:", url);
-  console.log("With params:", params);
+
   try {
     const response = await api.get(url, { params });
 
