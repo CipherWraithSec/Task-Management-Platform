@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { ITaskData } from "../types/types";
+import { TaskData } from "../types/types";
 import { setTask } from "../lib/redux/features/task/taskSlice";
 import {
   setOpenTaskModal,
@@ -17,7 +17,7 @@ import {
 } from "../lib/redux/features/modal/modalSlice";
 import { useAppDispatch } from "../hooks/redux";
 
-const MoreMenu = ({ task }: { task: ITaskData }) => {
+const MoreMenu = ({ task }: { task: TaskData }) => {
   const dispatch = useAppDispatch();
 
   // To open the delete modal

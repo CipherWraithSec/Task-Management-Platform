@@ -11,51 +11,33 @@ import {
   DropdownMenuItem,
   DropdownMenuGroup,
 } from "./ui/dropdown-menu";
-import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Input } from "./ui/input";
 import { setAuthStatus, useAuth } from "../lib/redux/features/auth/authSlice";
 import { routes, unauthenticatedRoutes } from "../lib/constants/routes";
-import { logout } from "../actions";
 import { useAppDispatch } from "../hooks/redux";
 import { useLogoutMutation, useUserQuery } from "../hooks/useAuth";
 import { useRouter } from "next/navigation";
-// import { Link, useLoaderData, useLocation, useNavigate } from "react-router";
-// import { WorkspaceAvatar } from "../workspace/workspace-avatar";
-
-interface HeaderProps {
-  onWorkspaceSelected: (workspace: Workspace) => void;
-  selectedWorkspace: Workspace | null;
-  onCreateWorkspace: () => void;
-}
+import { setSearchTerm, useTasks } from "../lib/redux/features/task/taskSlice";
 
 export const Header = () => {
   const { isAuthenticated } = useAuth();
 
+  const { searchTerm } = useTasks();
+
   const dispatch = useAppDispatch();
 
   const router = useRouter();
-  // const navigate = useNavigate();
-
-  // const { user, logout } = useAuth();
-  // const { workspaces } = useLoaderData() as { workspaces: Workspace[] };
-  // const isOnWorkspacePage = useLocation().pathname.includes("/workspace");
-
-  // const handleOnClick = (workspace: Workspace) => {
-  // onWorkspaceSelected(workspace);
-  // const location = window.location;
-  // if (isOnWorkspacePage) {
-  // navigate(`/workspaces/${workspace._id}`);
-  // } else {
-  // const basePath = location.pathname;
-  // navigate(`${basePath}?workspaceId=${workspace._id}`);
-  // }
-  // };
 
   const { data } = useUserQuery() as {
     data: any;
   };
 
-  const { mutate, isPending } = useLogoutMutation();
+  const { mutate } = useLogoutMutation();
+
+  const handleSearchChange = (e) => {
+    dispatch(setSearchTerm(e.target.value));
+  };
 
   const logoutHandler = () => {
     mutate();
@@ -79,8 +61,8 @@ export const Header = () => {
               className="peer h-8 w-full max-w-xl  ps-8 pe-2"
               placeholder={"Search"}
               type="search"
-              // value={"Search"}
-              // onChange={(e) => onSearchChange?.(e.target.value)}
+              value={searchTerm}
+              onChange={(e) => handleSearchChange(e)}
             />
             <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-2 peer-disabled:opacity-50">
               <SearchIcon size={16} />
@@ -101,11 +83,6 @@ export const Header = () => {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end">
-              {/* <DropdownMenuSeparator /> */}
-              {/* <DropdownMenuItem> */}
-              {/* <Link to="/user/profile">Profile</Link> */}
-              {/* </DropdownMenuItem> */}
-
               {isAuthenticated ? (
                 <DropdownMenuItem onClick={logoutHandler}>
                   Log Out

@@ -11,7 +11,7 @@ export enum TaskStatus {
   In_Progress = "in_progress",
   Completed = "completed",
 }
-export interface ITaskData {
+export type TaskData = {
   id: string;
   title: string;
   description?: string | null;
@@ -20,6 +20,13 @@ export interface ITaskData {
   updatedAt: Date;
   deletedAt?: Date | null;
   createdById: string;
+};
+
+export interface IPaginatedResponse {
+  items: TaskData[];
+  total: number;
+  page: number;
+  limit: number;
 }
 
 export interface ITaskHistory {

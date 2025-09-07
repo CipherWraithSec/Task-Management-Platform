@@ -108,7 +108,6 @@ const TaskModal = () => {
     });
   };
 
-  console.log("Task Modal Rendered:", { isTaskModalOpen, activeTask });
   return (
     <Dialog open={isTaskModalOpen} onOpenChange={handleOnOpenChange}>
       <DialogContent>

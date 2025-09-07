@@ -3,6 +3,9 @@ import { CreateTaskDto } from './dto/createTask.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Task, TaskHistory } from 'generated/prisma';
 import { UpdateTaskDto } from './dto/updateTask.dto';
+import { PaginationResponseDto } from './dto/paginationResponse.dto';
+import { GetTasksDto } from './dto/getTasks.dto';
+import { Prisma } from 'generated/prisma';
 
 @Injectable()
 export class TasksService {
@@ -31,8 +34,45 @@ export class TasksService {
     return task;
   }
 
-  async getTasks(): Promise<Task[]> {
-    return this.prismaService.task.findMany();
+  async getTasks(params: GetTasksDto): Promise<PaginationResponseDto<Task[]>> {
+    const {
+      page = 1,
+      limit = 10,
+      sortBy = 'createdAt',
+      sortOrder = 'asc',
+      searchTerm,
+    } = params;
+
+    const whereClause: Prisma.TaskWhereInput = {
+      deletedAt: null, // Manually add the soft-delete filter here
+      ...(searchTerm && {
+        title: {
+          contains: searchTerm,
+          mode: Prisma.QueryMode.insensitive,
+        },
+      }),
+    };
+
+    const [items, total] = await this.prismaService.$transaction([
+      this.prismaService.task.findMany({
+        skip: (page - 1) * limit,
+        take: limit,
+        where: whereClause,
+        orderBy: {
+          [sortBy]: sortOrder,
+        },
+      }),
+      this.prismaService.task.count({
+        where: whereClause,
+      }),
+    ]);
+
+    return {
+      items,
+      total,
+      page,
+      limit,
+    };
   }
 
   async updateTask(

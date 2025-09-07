@@ -114,17 +114,22 @@ export async function postDataAction<T>(
   }
 }
 
-export async function fetchDataAction<T>(url: string): Promise<T> {
+export async function fetchDataAction<T>(
+  url: string,
+  params?: { [key: string]: any }
+): Promise<T> {
   // Get the cookie from the current request scope
   const cookieStore = await cookies();
   const cookieString = cookieStore.toString();
 
   // Access the Axios instance
   const api = createApi(cookieString);
-
+  console.log("Fetching URL:", url);
+  console.log("With params:", params);
   try {
-    const response = await api.get(url);
+    const response = await api.get(url, { params });
 
+    console.log("Fetched response:", response.data);
     return response.data;
   } catch (error: any) {
     throw await getErrorMessage(error.response?.data);

@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwtAuth.guard';
@@ -16,6 +17,8 @@ import type { TokenPayload } from '../auth/tokenPayload.interface';
 import { TasksService } from './tasks.service';
 import { Task, TaskHistory } from 'generated/prisma';
 import { UpdateTaskDto } from './dto/updateTask.dto';
+import { PaginationResponseDto } from './dto/paginationResponse.dto';
+import { GetTasksDto } from './dto/getTasks.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -32,8 +35,10 @@ export class TasksController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getTasks() {
-    return this.taskService.getTasks();
+  async getTasks(
+    @Query() query: GetTasksDto,
+  ): Promise<PaginationResponseDto<Task[]>> {
+    return this.taskService.getTasks(query);
   }
 
   @Get('/history/:taskId')

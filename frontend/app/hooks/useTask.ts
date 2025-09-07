@@ -1,3 +1,5 @@
+"use client";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AddTaskFormData } from "../components/TaskModal";
 import {
@@ -6,8 +8,16 @@ import {
   postDataAction,
   updateDataAction,
 } from "../actions";
-import { ITaskData, ITaskHistory } from "../types/types";
+import { TaskData, ITaskHistory } from "../types/types";
 import { useTasks } from "../lib/redux/features/task/taskSlice";
+import useDebounce from "./useDebounce";
+
+type PaginatedResponse<T> = {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+};
 
 // Add/Update task
 export const useAddTaskMutation = () => {
@@ -15,7 +25,7 @@ export const useAddTaskMutation = () => {
 
   const { activeTask } = useTasks();
   return useMutation({
-    mutationFn: (data: AddTaskFormData): Promise<ITaskData> => {
+    mutationFn: (data: AddTaskFormData): Promise<TaskData> => {
       // If there's an active task, update it; otherwise, create a new one
       if (activeTask) {
         return updateDataAction(`/tasks/${activeTask.id}`, data);
@@ -23,28 +33,11 @@ export const useAddTaskMutation = () => {
         return postDataAction("/tasks", data);
       }
     },
-    onSuccess: (newData) => {
-      queryClient.setQueryData(
-        ["tasks"],
-        (oldData: ITaskData[] | undefined) => {
-          if (!oldData) {
-            return [newData];
-          }
-
-          // Check if an existing task is being updated
-          const isUpdating = oldData.some((task) => task.id === newData.id);
-
-          if (isUpdating) {
-            // If it's an update, replace the old version with the new one
-            return oldData.map((task) =>
-              task.id === newData.id ? newData : task
-            );
-          } else {
-            // If it's a new task, append it to the list
-            return [...oldData, newData];
-          }
-        }
-      );
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({
+        queryKey: ["tasks"],
+      });
 
       queryClient.invalidateQueries({
         queryKey: ["taskHistory"],
@@ -55,9 +48,38 @@ export const useAddTaskMutation = () => {
 
 // Retrieve a list of tasks
 export const useTaskQuery = () => {
+  const { page, limit, sortBy, sortOrder, searchTerm } = useTasks();
+
+  const debouncedSearch = useDebounce(searchTerm, 500);
+
+  // Add this line to log the parameters being sent
+  console.log("Query parameters:", {
+    page,
+    limit,
+    sortBy,
+    sortOrder,
+    searchTerm: debouncedSearch,
+  });
+
+  // Prepare the params object, filtering out null or undefined values
+  const params: Record<string, any> = {
+    page,
+    limit,
+    sortBy,
+    sortOrder,
+  };
+  if (debouncedSearch) {
+    params.searchTerm = debouncedSearch;
+  }
+
+  const queryKey = ["tasks", params];
+
+  const queryFn = (): Promise<PaginatedResponse<TaskData>> =>
+    fetchDataAction("/tasks", params);
+
   return useQuery({
-    queryKey: ["tasks"],
-    queryFn: (): Promise<ITaskData[]> => fetchDataAction("/tasks"),
+    queryKey,
+    queryFn,
   });
 };
 

@@ -33,7 +33,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers initialAuthStatus={initialAuthStatus}>
-          <Header />
+          {/* <Header /> */}
           {children}
         </Providers>
       </body>
