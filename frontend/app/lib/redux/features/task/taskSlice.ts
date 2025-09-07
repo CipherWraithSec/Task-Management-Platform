@@ -2,6 +2,8 @@ import { useAppSelector } from "@/app/hooks/redux";
 import { TaskData } from "@/app/types/types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
+export type TaskStatusFilter = TaskData["status"] | "all";
+
 type taskManagerState = {
   activeTask: TaskData | null;
   searchTerm: string;
@@ -9,6 +11,7 @@ type taskManagerState = {
   limit: number;
   sortBy: string; // Default sort field
   sortOrder: string; // 'asc' or 'desc'
+  statusFilter: TaskStatusFilter;
 };
 
 const initialState: taskManagerState = {
@@ -18,6 +21,7 @@ const initialState: taskManagerState = {
   limit: 10,
   sortBy: "createdAt", // Default sort field
   sortOrder: "asc", // 'asc' or 'desc'
+  statusFilter: "all",
 };
 
 const taskSlice = createSlice({
@@ -43,11 +47,21 @@ const taskSlice = createSlice({
     setSearchTerm: (state, action: PayloadAction<string>) => {
       state.searchTerm = action.payload;
     },
+    setStatusFilter: (state, action: PayloadAction<TaskStatusFilter>) => {
+      state.statusFilter = action.payload;
+      state.page = 1; // Reset page when filter changes
+    },
   },
 });
 
 export const useTasks = () => useAppSelector((state) => state.task);
 
-export const { setTask, setPage, setLimit, setSort, setSearchTerm } =
-  taskSlice.actions;
+export const {
+  setTask,
+  setPage,
+  setLimit,
+  setSort,
+  setSearchTerm,
+  setStatusFilter,
+} = taskSlice.actions;
 export default taskSlice.reducer;

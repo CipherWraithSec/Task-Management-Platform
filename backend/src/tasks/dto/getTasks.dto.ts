@@ -1,6 +1,14 @@
 // src/tasks/dto/get-tasks.dto.ts
-import { IsInt, IsOptional, IsString, IsIn, IsNotEmpty } from 'class-validator';
+import {
+  IsInt,
+  IsOptional,
+  IsString,
+  IsIn,
+  IsNotEmpty,
+  IsEnum,
+} from 'class-validator';
 import { Type } from 'class-transformer';
+import { TaskStatus } from 'generated/prisma';
 
 export class GetTasksDto {
   @IsOptional()
@@ -27,4 +35,8 @@ export class GetTasksDto {
   @IsString()
   @IsNotEmpty()
   searchTerm?: string;
+
+  @IsOptional()
+  @IsEnum(TaskStatus)
+  status?: TaskStatus;
 }

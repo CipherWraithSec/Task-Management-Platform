@@ -41,6 +41,7 @@ export class TasksService {
       sortBy = 'createdAt',
       sortOrder = 'asc',
       searchTerm,
+      status,
     } = params;
 
     const whereClause: Prisma.TaskWhereInput = {
@@ -50,6 +51,9 @@ export class TasksService {
           contains: searchTerm,
           mode: Prisma.QueryMode.insensitive,
         },
+      }),
+      ...(status && {
+        status: status,
       }),
     };
 

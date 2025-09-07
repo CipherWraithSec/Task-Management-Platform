@@ -3,6 +3,7 @@ import React from "react";
 import TaskModal from "./TaskModal";
 import { useAddTaskMutation, useTaskQuery } from "../hooks/useTask";
 import { toast } from "sonner";
+import { ArrowUp } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -111,14 +112,32 @@ const TaskList = () => {
                       onClick={() => handleSort("title")}
                       className="cursor-text-nowrap cursor-pointer hidden md:table-cell"
                     >
-                      Tasks
+                      <div className="flex items-center gap-1">
+                        <span>Tasks</span>
+                        {sortBy === "title" && (
+                          <ArrowUp
+                            className={`h-4 w-4 transition-transform ${
+                              sortOrder === "desc" ? "rotate-180" : ""
+                            }`}
+                          />
+                        )}
+                      </div>
                     </TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead
                       onClick={() => handleSort("createdAt")}
                       className="text-nowrap cursor-pointer"
                     >
-                      Date Added
+                      <div className="flex items-center gap-1">
+                        <span>Date Added</span>
+                        {sortBy === "createdAt" && (
+                          <ArrowUp
+                            className={`h-4 w-4 transition-transform ${
+                              sortOrder === "desc" ? "rotate-180" : ""
+                            }`}
+                          />
+                        )}
+                      </div>
                     </TableHead>
                     <TableHead className="text-nowrap text-right">
                       Actions

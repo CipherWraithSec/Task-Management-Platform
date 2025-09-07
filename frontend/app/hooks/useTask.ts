@@ -8,17 +8,10 @@ import {
   postDataAction,
   updateDataAction,
 } from "../actions";
-import { TaskData, ITaskHistory } from "../types/types";
+import { TaskData, ITaskHistory, PaginatedResponse } from "../types/types";
 import { useTasks } from "../lib/redux/features/task/taskSlice";
 import useDebounce from "./useDebounce";
 import { toast } from "sonner";
-
-type PaginatedResponse<T> = {
-  items: T[];
-  total: number;
-  page: number;
-  limit: number;
-};
 
 // Add/Update task
 export const useAddTaskMutation = () => {
@@ -49,7 +42,8 @@ export const useAddTaskMutation = () => {
 
 // Retrieve a list of tasks
 export const useTaskQuery = () => {
-  const { page, limit, sortBy, sortOrder, searchTerm } = useTasks();
+  const { page, limit, sortBy, sortOrder, searchTerm, statusFilter } =
+    useTasks();
 
   const debouncedSearch = useDebounce(searchTerm, 500);
 
@@ -59,6 +53,7 @@ export const useTaskQuery = () => {
     limit,
     sortBy,
     sortOrder,
+    statusFilter,
     searchTerm: debouncedSearch,
   });
 
@@ -68,9 +63,17 @@ export const useTaskQuery = () => {
     limit,
     sortBy,
     sortOrder,
+    statusFilter,
   };
+
+  // Only include searchTerm if it's not empty
   if (debouncedSearch) {
     params.searchTerm = debouncedSearch;
+  }
+
+  // Conditionally add status filter
+  if (statusFilter !== "all") {
+    params.status = statusFilter;
   }
 
   const queryKey = ["tasks", params];
