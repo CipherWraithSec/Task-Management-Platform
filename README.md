@@ -9,10 +9,11 @@ Backend includes the following:
 - Soft deletion
 - Task history tracking
 - API pagination, sorting and filtering
+- Data validation and transformation with pipes
 
 Frontend includes the following:
 
-- Nextjs UI frontend to create, update, delete and view tasks
+- Nextjs UI with app router and server side fetching
 - Add a new task by providing a title and description.
 - Edit the title, description, and status of an existing task.
 - Delete tasks (with a confirmation).
@@ -20,6 +21,8 @@ Frontend includes the following:
 - Task history UI modal
 - Responsive UI
 - Paginated list of tasks with the ability to filter by status
+- Redux UI state management
+- React Query for caching and revalidation
 
 Bonus:
 
@@ -50,4 +53,4 @@ npm run dev
 
 ## Demo
 
-- `You can view` - [Demo](https://)
+- `You can view` - [Demo](https://www.loom.com/share/01f0a23acd974813bfc745dfcefaecf2?sid=f3bb8a1d-9506-4e0a-9947-cc8b658de203)
