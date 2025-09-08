@@ -110,10 +110,12 @@ const TaskList = () => {
                   <TableRow>
                     <TableHead
                       onClick={() => handleSort("title")}
-                      className="cursor-text-nowrap cursor-pointer hidden md:table-cell"
+                      className="text-nowrap cursor-pointer "
                     >
                       <div className="flex items-center gap-1">
-                        <span>Tasks</span>
+                        <span className="text-nowrap font-bold text-[16px] md:text-lg">
+                          Tasks
+                        </span>
                         {sortBy === "title" && (
                           <ArrowUp
                             className={`h-4 w-4 transition-transform ${
@@ -123,13 +125,17 @@ const TaskList = () => {
                         )}
                       </div>
                     </TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead className="text-nowrap font-bold text-[16px] md:text-lg">
+                      Status
+                    </TableHead>
                     <TableHead
                       onClick={() => handleSort("createdAt")}
-                      className="text-nowrap cursor-pointer"
+                      className="text-nowrap cursor-pointer hidden md:table-cell"
                     >
                       <div className="flex items-center gap-1">
-                        <span>Date Added</span>
+                        <span className="text-nowrap font-bold text-[16px] md:text-lg">
+                          Date Added
+                        </span>
                         {sortBy === "createdAt" && (
                           <ArrowUp
                             className={`h-4 w-4 transition-transform ${
@@ -139,7 +145,7 @@ const TaskList = () => {
                         )}
                       </div>
                     </TableHead>
-                    <TableHead className="text-nowrap text-right">
+                    <TableHead className=" text-nowrap text-right font-bold text-[16px] md:text-lg">
                       Actions
                     </TableHead>
                   </TableRow>
@@ -148,7 +154,7 @@ const TaskList = () => {
                   {data?.items?.map((task) => (
                     <TableRow key={task.id} className="">
                       <TableCell
-                        className="space-y-2  text-nowrap w-1/2 capitalize"
+                        className="space-y-2 w-1/2 capitalize"
                         onClick={() => handleTaskHistory(task)}
                       >
                         <div>

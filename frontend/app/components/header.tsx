@@ -1,20 +1,17 @@
 "use client";
 
-import { Button } from "./ui/button";
-import { Bell, PlusCircle, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuItem,
-  DropdownMenuGroup,
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Input } from "./ui/input";
 import { setAuthStatus, useAuth } from "../lib/redux/features/auth/authSlice";
-import { routes, unauthenticatedRoutes } from "../lib/constants/routes";
+import { unauthenticatedRoutes } from "../lib/constants/routes";
 import { useAppDispatch } from "../hooks/redux";
 import { useLogoutMutation, useUserQuery } from "../hooks/useAuth";
 import { useRouter } from "next/navigation";
@@ -57,7 +54,6 @@ export const Header = () => {
         {isAuthenticated && (
           <div className="relative flex-1">
             <Input
-              // id={`input-${id}`}
               className="peer h-8 w-full max-w-xl  ps-8 pe-2"
               placeholder={"Search"}
               type="search"

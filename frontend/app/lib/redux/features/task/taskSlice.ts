@@ -9,8 +9,8 @@ type taskManagerState = {
   searchTerm: string;
   page: number;
   limit: number;
-  sortBy: string; // Default sort field
-  sortOrder: string; // 'asc' or 'desc'
+  sortBy: string;
+  sortOrder: string;
   statusFilter: TaskStatusFilter;
 };
 
@@ -19,8 +19,8 @@ const initialState: taskManagerState = {
   searchTerm: "",
   page: 1,
   limit: 10,
-  sortBy: "createdAt", // Default sort field
-  sortOrder: "asc", // 'asc' or 'desc'
+  sortBy: "createdAt",
+  sortOrder: "asc",
   statusFilter: "all",
 };
 

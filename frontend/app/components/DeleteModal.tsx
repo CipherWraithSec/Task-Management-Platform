@@ -1,6 +1,5 @@
 "use client";
 
-import { toast } from "sonner";
 import { useAppDispatch } from "../hooks/redux";
 import {
   setOpenDeleteModal,

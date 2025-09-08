@@ -5,9 +5,6 @@ import { Toaster } from "sonner";
 import React from "react";
 import { getQueryClient } from "./getQueryClient";
 import ReduxProvider from "./lib/redux/components/reduxProvider";
-import { makeStore } from "./lib/redux/store";
-
-// const queryClient = new QueryClient();
 
 interface ProvidersProps {
   children: React.ReactNode;

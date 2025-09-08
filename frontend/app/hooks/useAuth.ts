@@ -1,5 +1,5 @@
 import { fetchData, postData } from "@/app/lib/fetchUtil";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SignupFormData } from "../auth/signup/page";
 import {
   fetchDataAction,
@@ -22,8 +22,20 @@ export const useLoginMutation = () => {
 };
 
 export const useLogoutMutation = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: () => logout(),
+    onSuccess: () => {
+      // invalidate
+      queryClient.invalidateQueries({
+        queryKey: ["tasks"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["taskHistory"],
+      });
+    },
   });
 };
 

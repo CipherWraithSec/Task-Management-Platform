@@ -15,13 +15,6 @@ enum TaskStatus {
   completed
 }
 
-// model User {
-//   id       Int    @id @default(autoincrement())
-//   username String
-//   email    String @unique
-//   password String
-// }
-
 // User model for authentication
 model User {
   id        String   @id @default(uuid())
@@ -35,15 +28,6 @@ model User {
   tasks     Task[]
   histories TaskHistory[]
 }
-
-// model Task {
-//   id          Int    @id @default(autoincrement())
-//   title       String
-//   description String
-//   status      Enum
-//   user        User   @relation(fields: [userId], references: [id])
-//   userId      Int
-// }
 
 // Task model with soft deletion and indexing for performance
 model Task {
@@ -71,18 +55,17 @@ model Task {
 
 // TaskHistory model to track changes in tasks
 model TaskHistory {
-  id             String   @id @default(uuid())
-  taskId         String
-  task           Task     @relation(fields: [taskId], references: [id])
-  previousStatus String?
-  newStatus      String
-  changeReason   String?
-  changedAt      DateTime @default(now())
+  id            String   @id @default(uuid())
+  taskId        String
+  task          Task     @relation(fields: [taskId], references: [id])
+  fieldName     String
+  previousValue String?
+  newValue      String?
+  changeReason  String?
+  changedAt     DateTime @default(now())
 
-  // Who performed the change
   changedById String
   changedBy   User   @relation(fields: [changedById], references: [id])
 
-  // Index on taskId to optimize history retrieval
   @@index([taskId], name: "idx_task_history_taskId")
 }

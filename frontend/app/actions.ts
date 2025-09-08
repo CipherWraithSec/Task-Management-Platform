@@ -1,6 +1,5 @@
 "use server";
 
-import { SignupFormData } from "./auth/signup/page";
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 import createApi from "./lib/utils/api";
@@ -25,7 +24,7 @@ const formatErrorMessage = (message: string) => {
   return message.charAt(0).toUpperCase() + message.slice(1);
 };
 
-// Get a user-friendly error message from the api response
+// Get a user friendly error message from the api response
 export const getErrorMessage = async (response: any) => {
   if (response?.message) {
     // Check if the message is an array from class-validator middleware
@@ -50,7 +49,7 @@ const setAuthCookie = (response, cookieStore) => {
     // The first element of the array contains the combined cookie string
     const cookieString = setCookieHeader[0];
     const token = cookieString.split(";")[0].split("=")[1];
-    // Handle the case where the token is undefined
+    // If token is undefined
     if (token) {
       cookieStore.set({
         name: AUTHENTICATION_COOKIE,

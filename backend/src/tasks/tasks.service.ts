@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTaskDto } from './dto/createTask.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Task, TaskHistory } from 'generated/prisma';
@@ -12,26 +16,39 @@ export class TasksService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async createTask(data: CreateTaskDto, createdById: string): Promise<Task> {
-    // Create the task
-    const task = await this.prismaService.task.create({
-      data: {
-        ...data,
-        createdById,
-      },
-    });
+    try {
+      // Transaction to ensure both task creation and history logging succeed or fail together
+      return await this.prismaService.$transaction(async (prisma) => {
+        // Create the task
+        const task = await prisma.task.create({
+          data: {
+            ...data,
+            createdById,
+          },
+        });
+        // Log the creation in TaskHistory
+        await prisma.taskHistory.create({
+          data: {
+            taskId: task.id,
+            fieldName: 'creation',
+            previousValue: null, // No previous status on creation
+            newValue: task.status,
+            changeReason: 'Task created',
+            changedById: createdById,
+          },
+        });
 
-    // Log task creation in history
-    await this.prismaService.taskHistory.create({
-      data: {
-        taskId: task.id,
-        previousStatus: null, // no previous status on creation
-        newStatus: task.status,
-        changeReason: 'Task created',
-        changedById: createdById,
-      },
-    });
-
-    return task;
+        return task;
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('A task with this title already exists.');
+      }
+      throw error;
+    }
   }
 
   async getTasks(params: GetTasksDto): Promise<PaginationResponseDto<Task[]>> {
@@ -45,7 +62,7 @@ export class TasksService {
     } = params;
 
     const whereClause: Prisma.TaskWhereInput = {
-      deletedAt: null, // Manually add the soft-delete filter here
+      deletedAt: null, // soft-delete filter
       ...(searchTerm && {
         title: {
           contains: searchTerm,
@@ -84,88 +101,107 @@ export class TasksService {
     data: UpdateTaskDto,
     updatedById: string,
   ): Promise<Task> {
-    const currentTask = await this.prismaService.task.findFirst({
-      where: { id, deletedAt: null },
-    });
+    return await this.prismaService.$transaction(async (prisma) => {
+      // Fetch the current task state
+      const currentTask = await prisma.task.findFirst({
+        where: { id, deletedAt: null },
+      });
 
-    if (!currentTask) {
-      throw new NotFoundException('Task not found');
-    }
+      if (!currentTask) {
+        throw new NotFoundException('Task not found');
+      }
 
-    // If status is updated, record the change in TaskHistory
-    if (data.status && data.status !== currentTask.status) {
-      await this.prismaService.taskHistory.create({
-        data: {
-          taskId: id,
-          previousStatus: currentTask.status,
-          newStatus: data.status,
+      interface ChangeToLog {
+        fieldName: string;
+        previousValue: string | null;
+        newValue: string | null;
+        changeReason: string;
+      }
+
+      // Track changes to be logged
+      const changesToLog: ChangeToLog[] = [];
+
+      // Check for status change
+      if (data.status && data.status !== currentTask.status) {
+        changesToLog.push({
+          fieldName: 'status',
+          previousValue: currentTask.status,
+          newValue: data.status,
           changeReason: 'Status updated',
-          changedById: updatedById,
-        },
-      });
-    }
+        });
+      }
 
-    // Title change
-    if (data.title && data.title !== currentTask.title) {
-      await this.prismaService.taskHistory.create({
-        data: {
-          taskId: id,
-          previousStatus: currentTask.title,
-          newStatus: data.title,
+      // Check for title change
+      if (data.title && data.title !== currentTask.title) {
+        changesToLog.push({
+          fieldName: 'title',
+          previousValue: currentTask.title,
+          newValue: data.title,
           changeReason: 'Title updated',
-          changedById: updatedById,
-        },
-      });
-    }
+        });
+      }
 
-    // Description change
-    if (data.description && data.description !== currentTask.description) {
-      await this.prismaService.taskHistory.create({
-        data: {
-          taskId: id,
-          previousStatus: currentTask.description,
-          newStatus: data.description,
+      // Check for description change
+      if (data.description && data.description !== currentTask.description) {
+        changesToLog.push({
+          fieldName: 'description',
+          previousValue: currentTask.description,
+          newValue: data.description,
           changeReason: 'Description updated',
-          changedById: updatedById,
+        });
+      }
+
+      // Log all changes at once if any were found
+      if (changesToLog.length > 0) {
+        await prisma.taskHistory.createMany({
+          data: changesToLog.map((change) => ({
+            taskId: id,
+            fieldName: change.fieldName,
+            previousValue: change.previousValue,
+            newValue: change.newValue,
+            changeReason: change.changeReason,
+            changedById: updatedById,
+          })),
+        });
+      }
+
+      // Perform the update
+      const updatedTask = await prisma.task.update({
+        where: { id },
+        data: {
+          ...data,
         },
       });
-    }
 
-    // Update task record
-    const updatedTask = await this.prismaService.task.update({
-      where: { id },
-      data: {
-        ...data,
-      },
+      return updatedTask;
     });
-
-    return updatedTask;
   }
 
   async softDeleteTask(id: string, deletedById: string): Promise<void> {
-    // Fetch the task to ensure it exists and isn't already deleted
-    const currentTask = await this.prismaService.task.findFirst({
-      where: { id, deletedAt: null },
-    });
-    if (!currentTask) {
-      throw new NotFoundException('Task not found');
-    }
-
-    // Add deletion in history
-    await this.prismaService.taskHistory.create({
-      data: {
-        taskId: id,
-        previousStatus: currentTask.status,
-        newStatus: 'deleted', // or you can add 'deleted' as a custom status if needed
-        changeReason: 'Task deleted',
-        changedById: deletedById,
-      },
-    });
-
-    // Soft-delete the task by setting deletedAt timestamp
-    await this.prismaService.task.update({
-      where: { id },
-      data: { deletedAt: new Date() },
+    // Use a transaction to ensure both operations succeed or fail together
+    await this.prismaService.$transaction(async (prisma) => {
+      const currentTask = await prisma.task.findFirst({
+        where: { id, deletedAt: null },
+      });
+      if (!currentTask) {
+        throw new NotFoundException('Task not found');
+      }
+      // Add deletion in history
+      await prisma.taskHistory.create({
+        data: {
+          taskId: id,
+          fieldName: 'deletion',
+          previousValue: currentTask.status,
+          newValue: null, // last status before deletion
+          changeReason: 'Task deleted',
+          changedById: deletedById,
+        },
+      });
+      // Soft-delete the task by setting deletedAt timestamp
+      await prisma.task.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      });
     });
   }
 

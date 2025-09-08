@@ -55,7 +55,6 @@ export default function Signup() {
         router.push("/auth/login");
       },
       onError: (error: any) => {
-        console.log("Error message for toast:", error.message);
         toast.error(error.message);
       },
     });

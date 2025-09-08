@@ -29,19 +29,20 @@ export interface IPaginatedResponse {
   limit: number;
 }
 
-export interface ITaskHistory {
-  id: string;
-  taskId: string;
-  previousStatus?: string | null;
-  newStatus?: string | null;
-  changeReason?: string | null;
-  changedById: string;
-  changedAt: Date;
-}
-
 export type PaginatedResponse<T> = {
   items: T[];
   total: number;
   page: number;
   limit: number;
 };
+
+export interface ITaskHistory {
+  id: string;
+  taskId: string;
+  fieldName: string;
+  previousValue?: string | null;
+  newValue?: string | null;
+  changeReason?: string | null;
+  changedAt: Date;
+  changedById: string;
+}

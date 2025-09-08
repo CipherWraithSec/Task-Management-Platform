@@ -34,7 +34,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const router = useRouter();
-  //   const { login } = useAuth();
+
   const dispatch = useAppDispatch();
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -48,14 +48,11 @@ export default function Login() {
   const handleOnSubmit = (values: LoginFormData) => {
     mutate(values, {
       onSuccess: (data) => {
-        // login(data);
-        console.log("logged in:", data);
         toast.success("Login successful");
         dispatch(setAuthStatus(true));
         router.push("/");
       },
       onError: (error: any) => {
-        console.log("Error message for toast:", error.message);
         toast.error(error.message);
       },
     });
